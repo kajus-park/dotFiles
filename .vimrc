@@ -8,6 +8,10 @@ filetype off
 "Vim-Plug plugin stuff
 "Install vim plug
 if empty(glob('~/.vim/autoload/plug.vim'))
+  if !executable("curl")
+    echoerr "You have to install curl or first install vim-plug yourself!"
+    execute "q!"
+  endif
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
@@ -20,6 +24,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'thaerkh/vim-workspace'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'morhetz/gruvbox'
+Plug 'thaerkh/vim-indentguides'
 
 call plug#end()
 
@@ -32,7 +38,7 @@ syntax on
 filetype plugin indent on
 
 " TODO: Pick a leader key
-" let mapleader = ","
+let mapleader = ","
 
 " Security
 set modelines=0
@@ -115,9 +121,9 @@ set clipboard^=unnamed,unnamedplus
 " Visualize tabs and newlines
 set listchars=tab:▸\ ,eol:¬
 " Uncomment this to enable by default:
-set list " To enable by default
+"set list " To enable by default
 " Or use your leader key + l to toggle on/off
-map <leader>l :set list!<CR> " Toggle tabs and EOL
+map <leader>l :set list!<CR>h " Toggle tabs and EOL
 
 " Colors
 set termguicolors
@@ -136,3 +142,11 @@ map <C-n> :NERDTreeToggle<CR>
 map <C-n>n :FZF %:h<CR>
 map <C-N>h :FZF ~<CR>
 
+"Gruvbox
+autocmd vimenter * colorscheme gruvbox
+set bg=dark
+
+"Vim Plug auto update
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
